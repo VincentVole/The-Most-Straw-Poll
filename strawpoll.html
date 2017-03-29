@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+    <title>Strawpoll</title>
+    <link rel="stylesheet" type="text/css" href="strawpoll.css"/>
+    <script type="text/javascript">
+	    window.onload = init;
+
+	    function init(){
+    		document.getElementById("add_op").onclick = add_op;
+    		document.getElementById("submit").onclick = process_form;
+    	}
+
+    	function add_op(){
+    		var new_input = document.createElement("input");
+    		var poll_form = document.getElementById("poll_form");
+    		new_input.style.display = "block";
+    		new_input.type = "text";
+    		new_input.placeholder = "Add poll option."
+    		poll_form.appendChild(new_input);
+
+
+    	}
+
+    	function process_form(){
+    		var query_string = "";
+    		var text_ar = document.getElementsByTagName("input");
+    		for (var i = 0; i < text_ar.length; i++) {
+    			query_string += "field" + i + "=" + text_ar[i].value;
+    			if(i < text_ar.length - 1){
+    				query_string += "&";
+    			}
+    		}
+
+
+    		create_poll(query_string);
+    	}
+
+    	function create_poll(query_string){
+    		var xhr = new XMLHttpRequest();
+
+			xhr.onreadystatechange = function () 
+			{
+
+				if (xhr.readyState == 4 && xhr.status == 200) 
+				{
+					var result =  xhr.responseText;
+					var container = document.getElementById("container");
+					//alert("New poll created at: http://pic.ucla.edu/~ureshineko/final_project/poll.php?id=" + result);
+					//window.location.assign("poll.php?id=" + result);
+					var share_text = document.createTextNode("Share your poll with friends!");
+					var share_p = document.createElement("p");
+					share_p.appendChild(share_text);
+					container.appendChild(share_p);
+
+					var link_p_text = document.createTextNode("Link: ");
+					var link_p = document.createElement("p");
+					link_p.appendChild(link_p_text);
+					var link_a_text = document.createTextNode("http://pic.ucla.edu/~ureshineko/final_project/poll.php?id=" + result);
+					var link_a = document.createElement("a");
+					link_a.href = "http://pic.ucla.edu/~ureshineko/final_project/poll.php?id=" + result;
+					link_a.appendChild(link_a_text);
+					link_p.appendChild(link_a);
+					container.appendChild(link_p);
+					
+				}
+			}	
+  			
+  			xhr.open("GET", "create_poll.php?" + query_string, true);
+			xhr.send(/*null*/);
+    	}
+
+    	
+    </script>
+</head>
+
+<body>
+<div id="logo"><h1 id="home"><a href='http://pic.ucla.edu/~ureshineko/final_project/strawpoll.html'>The Most Straw Poll</a></h1></div>
+<div id="container">
+<fieldset>
+	<form action="#" method="get" id="poll_form">
+		<input type="text" name="Question" placeholder="Type question here."/>
+		
+	
+	</form>	
+</fieldset>
+
+<button id="add_op">Add Poll Option</button>
+<button id="submit">Submit</button>
+</div>
+  
+</body>
+</html>
